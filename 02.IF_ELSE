@@ -1,0 +1,126 @@
+## Create Script
+
+
+#!/bin/bash
+
+# create_script
+# This script creates a new bash script, sets permissions and more
+# Author: reindert
+
+# Is there an argument?
+if [[ ! $1 ]]; then
+	echo "Missing argument"
+	exit 1
+fi
+
+scriptname="$1"
+bindir="${HOME}/bin"
+filename="${bindir}/${scriptname}"
+
+if [[ -e $filename ]]; then
+	echo "File ${filename} already exists"
+	exit 1
+fi
+
+if type "$scriptname"; then
+	echo "There is already a command with name ${scriptname}"
+	exit 1
+fi
+
+# Check bin directory exists
+if [[ ! -d $bindir ]]; then
+	# if not: create bin directory
+	if mkdir "$bindir"; then
+		echo "created ${bindir}"
+	else
+		echo "Could not create ${bindir}."
+		exit 1
+	fi
+fi
+
+# Create a script with a single line
+echo '#!/bin/bash' > "$filename"
+# Add executable permission
+chmod u+x "$filename"
+# Open with editor
+if [[ $EDITOR ]]; then 
+	$EDITOR "$filename"
+else
+	echo "Script created; not starting editor because \$EDITOR is not set."
+fi
+
+
+
+##Compare Value
+
+
+
+#!/bin/bash
+
+# compare length of two strings
+# Author: reindert
+
+# check number of arguments
+if [[ $# -ne 2 ]]; then
+	echo "Need exactly two arguments"
+	exit 1
+fi
+
+length_1=${#1}
+length_2=${#2}
+
+# Which one has most files?
+if [[ $length_1 -gt $length_2 ]]; then
+	echo "$1 is longest"
+elif [[ $length_1 -eq $length_2 ]]; then
+	echo "length is equal"
+else 
+	echo "$2 is longest"
+fi
+
+exit 0
+
+
+##Compare Directory
+
+#!/bin/bash
+
+# compare file count of two directories
+# Author: reindert
+
+# check number of arguments
+if [[ $# -ne 2 ]]; then
+	echo "Need exactly two arguments"
+	exit 1
+fi
+
+# Both arguments should be directories
+if [[ ! -d $1  ]]; then
+	echo "'$1' is not a directory"
+	exit 1
+fi
+if [[ ! -d $2  ]]; then
+	echo "'$2' is not a directory"
+	exit 1
+fi
+
+dir1="$1"
+dir2="$2"
+# Get number of files in directories
+count_1=$(ls -A1 "$dir1" | wc -l)
+count_2=$(ls -A1 "$dir2" | wc -l)
+
+# Which one has most files?
+if [[ $count_1 -gt $count_2 ]]; then
+	echo "${dir1} has most files"
+elif [[ $count_1 -eq $count_2 ]]; then
+	echo "number of files is equal"
+else 
+	echo "${dir2} has most files"
+fi
+
+exit 0
+
+
+
+
